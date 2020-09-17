@@ -2,6 +2,8 @@ package online.memphis;
 
 import java.io.*;
 import java.util.*;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class ProjectEuler {
 
@@ -628,6 +630,23 @@ public class ProjectEuler {
      */
 
     public static int solveTask21(int number) {
-        return 0;
+        List<Integer> amicableNumbers = new ArrayList<>();
+        for (int i = 1; i <= number; i++) {
+            int firstNum = getSumOfProperDivs(i);
+            int secondNum = getSumOfProperDivs(firstNum);
+            if (firstNum != secondNum && secondNum == i) amicableNumbers.add(i);
+        }
+        int sum = 0;
+        for (int num : amicableNumbers) {
+            sum += num;
+        }
+        return sum;
+    }
+
+    private static int getSumOfProperDivs(int number) {
+        return IntStream.iterate(1, num -> num + 1)
+                .limit(number / 2)
+                .filter((x) -> number % x == 0)
+                .sum();
     }
 }
