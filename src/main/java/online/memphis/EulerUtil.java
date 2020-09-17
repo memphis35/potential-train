@@ -2,6 +2,7 @@ package online.memphis;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class EulerUtil {
@@ -48,6 +49,21 @@ public class EulerUtil {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        return result;
+    }
+
+    public static List<int[]> parsePyramidList(String filename) {
+        List<String> pyramid = getMatrixList(filename);
+        List<int[]> result = new ArrayList<>();
+        Iterator<String> iter = pyramid.iterator();
+        while (iter.hasNext()) {
+            String[] array = iter.next().split(" ");
+            int[] numbers = new int[array.length];
+            for (int i = 0; i < numbers.length; i++) {
+                numbers[i] = parseInt(array[i]);
+            }
+            result.add(numbers);
         }
         return result;
     }

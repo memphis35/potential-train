@@ -1,13 +1,11 @@
 package online.memphis;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class ProjectEuler {
 
+    private static long count = 0;
     /*
      * --- 1. Multiples of 3 and 5 ---
      * If we list all the natural numbers below 10 that are
@@ -397,5 +395,239 @@ public class ProjectEuler {
             res = res * 10 + result[i];
         }
         return res;
+    }
+
+    /*
+     * --- 14. Longest Collatz sequence ---
+     * The following iterative sequence is defined for the set of positive integers:
+     * n → n/2 (n is even)
+     * n → 3n + 1 (n is odd)
+     * Using the rule above and starting with 13, we generate the following sequence:
+     * 13 → 40 → 20 → 10 → 5 → 16 → 8 → 4 → 2 → 1
+     * It can be seen that this sequence (starting at 13 and finishing at 1) contains
+     * 10 terms. Although it has not been proved yet (Collatz Problem), it is thought
+     * that all starting numbers finish at 1.
+     * Which starting number, under one million, produces the longest chain?
+     */
+    //TODO: Make search by multi-thread realization
+    public static int solveTask14() {
+        int maxCount = 1;
+        int result = 0;
+        for (int i = 1_000_000; i > 1; i--) {
+            long tempNumber = i;
+            int tempCount = 1;
+            while (tempNumber != 1) {
+                tempNumber = tempNumber % 2 == 0 ? tempNumber / 2 : 3 * tempNumber + 1;
+                tempCount++;
+            }
+            if (tempCount > maxCount) {
+                result = i;
+                maxCount = tempCount;
+            }
+        }
+        return result;
+    }
+
+    static String appendAndDelete(String s, String t, int k) {
+        int length = Math.min(s.length(), t.length()), i;
+        for (i = 0; i < length; i++) {
+            if (s.charAt(i) != t.charAt(i)) break;
+        }
+        boolean isPossible = s.substring(i).length() + t.substring(i).length() == k;
+        return isPossible ? "Yes" : "No";
+    }
+
+    /*
+     * --- 15. Lattice paths ---
+     * Starting in the top left corner of a 2×2 grid, and only being able to move
+     * to the right and down, there are exactly 6 routes to the bottom right corner.
+     * How many such routes are there through a 20×20 grid?
+     */
+    //TODO: learh graphs, try to find math formula to calculate paths,
+    //      timeout=35 min
+    public static long solveTask15(int size) {
+        getPaths(size + 1, 0, 0);
+        return count;
+    }
+
+    private static void getPaths(int length, int i, int j) {
+        if (i < length - 1) getPaths(length, i + 1, j);
+        if (j < length - 1) getPaths(length, i, j + 1);
+        if (i == j && i + j == length * 2 - 2) count++;
+        return;
+    }
+
+    /*
+     * --- 16. Power digit sum ---
+     * 2^15 = 32768 and the sum of its digits is 3 + 2 + 7 + 6 + 8 = 26.
+     * What is the sum of the digits of the number 21000?
+     */
+
+    public static int solveTask16(int num, int power) {
+        int[] result = getBigPower(num, power);
+        int sum = 0;
+        for (int i = result.length - 1; result[i] != -1; i--) {
+            sum += result[i];
+        }
+        return sum;
+    }
+
+    private static int[] getBigPower(int num, int power) {
+        int[] result = new int[power];
+        Arrays.fill(result, -1);
+        result[result.length - 1] = num;
+        int tempPower = 1;
+        while (tempPower < power) {
+            for (int i = result.length - 1; i >= 0 && result[i] >= 0; i--) {
+                result[i] *= num;
+            }
+            for (int i = result.length - 1; i >= 0; i--) {
+                int temp = result[i];
+                result[i] = temp % 10;
+                if (temp > 9) {
+                    if (result[i - 1] >= 0) {
+                        result[i - 1] += temp / 10;
+                    } else {
+                        result[i - 1] = temp / 10;
+                    }
+                } else if (result[i] == -1) {
+                    break;
+                }
+            }
+            tempPower++;
+        }
+        return result;
+    }
+
+    /*
+     * --- 17. Number letter counts ---
+     * If the numbers 1 to 5 are written out in words: one, two, three, four, five,
+     * then there are 3 + 3 + 5 + 4 + 4 = 19 letters used in total.If all the numbers
+     * from 1 to 1000 (one thousand) inclusive were written out in words, how many letters would be used?
+     */
+
+    public static long solveTask17(int limit) {
+        long sumOfLetters = 0;
+        for (int i = 1; i <= limit; i++) {
+            int number = i;
+            int tempSum = 0;
+            for (int j = 100; number > 0; j *= 10) {
+                int temp = number % j;
+                if (temp > 0 && temp <= 20) {
+                    tempSum += Numbers.getSum(temp);
+                } else if (temp > 20 && temp < 100) {
+                    tempSum += Numbers.getSum(temp - (temp % 10)) + Numbers.getSum(temp % 10);
+                } else if (temp >= 100) {
+                    tempSum += (tempSum == 0) ? Numbers.getSum(temp) : Numbers.getSum(temp) + 3;
+                }
+                number = number - (number % j);
+            }
+            sumOfLetters += tempSum;
+        }
+        return sumOfLetters;
+    }
+
+    /*
+     * --- 18. Maximum path sum I ---
+     * Find the maximum total from top to bottom of the triangle (file: task18)):
+     */
+    //TODO: TO REALIZE A BINARY TREE, ANSWER IS 1074
+    public static int solveTask18() {
+        List<int[]> pyramid = EulerUtil.parsePyramidList("./files/task18");
+        int[] upperRow = pyramid.get(0);
+        for (int i = 1; i < pyramid.size(); i++) {
+            int[] lowerRow = pyramid.get(i);
+            int[] sumRow = new int[pow(2, i)];
+            for (int up = 0, k = 0, low = 0; up < upperRow.length; up++) {
+                sumRow[k++] = upperRow[up] + lowerRow[low];
+                sumRow[k++] = upperRow[up] + lowerRow[low + 1];
+                if (up % 2 != 0) low++;
+            }
+            upperRow = sumRow;
+        }
+        int sum = 0;
+        for (int number : upperRow) {
+            sum += number;
+        }
+        return sum;
+    }
+
+    private static int pow(int number, int power) {
+        int result = number;
+        while (power-- > 1) {
+            result *= number;
+        }
+        return result;
+    }
+
+    //for solve task18 recursive brute force permutations
+    private static int[] getSum(List<int[]> pyramid, int row, int index, int sum, int[] maxSum) {
+        if (row >= pyramid.size()) {
+            maxSum[0] = Math.max(sum, maxSum[0]);
+            return maxSum;
+        }
+        if (index < pyramid.get(row).length) {
+            sum += pyramid.get(row)[index];
+        } else {
+            return maxSum;
+        }
+        getSum(pyramid, row + 1, index, sum, maxSum);
+        getSum(pyramid, row + 1, index + 1, sum, maxSum);
+        return maxSum;
+    }
+
+    /*
+     * --- 20. Factorial digit sum ---
+     * Find the sum of the digits in the number 100!
+     */
+
+    public static int solveTask20(int number) {
+        int[] result = getFactorial(number);
+        int sum = 0;
+        for (int i = 0; result[i] >= 0; i++) {
+            sum += result[i];
+        }
+        return sum;
+    }
+
+    private static int[] getFactorial(int number) {
+        int[] result = new int[500];
+        Arrays.fill(result, -1);
+        result[0] = 1;
+        for (int i = 2; i <= number; i++) {
+            for (int j = 0; result[j] >= 0; j++) {
+                result[j] *= i;
+            }
+            recheckArray(result);
+        }
+        return result;
+    }
+
+    private static void recheckArray(int[] array) {
+        for (int i = 0; array[i] >= 0; i++) {
+            int temp = array[i];
+            if (temp > 0) {
+                array[i] = temp % 10;
+                if (array[i + 1] == -1) {
+                    array[i + 1] = temp / 10;
+                } else {
+                    array[i + 1] += temp / 10;
+                }
+            }
+        }
+    }
+
+    /*
+     * --- 21. Amicable numbers
+     * Let d(n) be defined as the sum of proper divisors of n (numbers less
+     * than n which divide evenly into n). If d(a) = b and d(b) = a, where a ≠ b,
+     * then a and b are an amicable pair and each of a and b are called amicable numbers.
+     * For example, the proper divisors of 220 are 1, 2, 4, 5, 10, 11, 20, 22, 44, 55
+     * and 110; therefore d(220) = 284. The proper divisors of 284 are 1, 2, 4, 71 and 142;
+     * so d(284) = 220. Evaluate the sum of all the amicable numbers under 10000.
+     */
+
+    public static int solveTask21(int number) {
+        return 0;
     }
 }
