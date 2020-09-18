@@ -1,5 +1,7 @@
 package online.memphis;
 
+import online.memphis.util.CalendarUtil;
+
 import java.io.*;
 import java.util.*;
 import java.util.stream.IntStream;
@@ -579,6 +581,31 @@ public class ProjectEuler {
     }
 
     /*
+     * --- 19. Counting Sundays ---
+     * How many Sundays fell on the first of the month during the twentieth century
+     * (1 Jan 1901 to 31 Dec 2000)?
+     */
+
+    public static int solveTask19() throws IllegalAccessException {
+        int daysAfter1900start = 1;
+        for (CalendarUtil month : CalendarUtil.values()) {
+            daysAfter1900start += CalendarUtil.getDays(month, isLeapYear(1900));
+        }
+        int countSundays = 0;
+        for (int i = 1901; i < 2001; i++) {
+            for (CalendarUtil month : CalendarUtil.values()) {
+                daysAfter1900start += CalendarUtil.getDays(month, isLeapYear(i));
+                if (daysAfter1900start % 7 == 0) countSundays++;
+            }
+        }
+        return countSundays;
+    }
+
+    private static boolean isLeapYear(int year) {
+        return (year % 4 == 0 && year % 100 != 0) || year % 400 == 0;
+    }
+
+    /*
      * --- 20. Factorial digit sum ---
      * Find the sum of the digits in the number 100!
      */
@@ -649,4 +676,6 @@ public class ProjectEuler {
                 .filter((x) -> number % x == 0)
                 .sum();
     }
+
+
 }
