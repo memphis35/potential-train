@@ -1,4 +1,4 @@
-package online.memphis;
+package online.memphis.util;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,7 +48,7 @@ public class Numbers {
         numbers.put(1000, 11); //one thousand
     }
 
-    static int getSum(int number) {
+    public static int getSum(int number) {
         return numbers.get(number);
     }
 }

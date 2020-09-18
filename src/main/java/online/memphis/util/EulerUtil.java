@@ -1,9 +1,10 @@
-package online.memphis;
+package online.memphis.util;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class EulerUtil {
 
@@ -64,6 +65,16 @@ public class EulerUtil {
                 numbers[i] = parseInt(array[i]);
             }
             result.add(numbers);
+        }
+        return result;
+    }
+
+    public static String[] parseFileTask22(String filename) {
+        String[] result = null;
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            result = reader.readLine().split("\\W+");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return result;
     }
