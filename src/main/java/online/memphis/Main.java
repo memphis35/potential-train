@@ -5,6 +5,8 @@ import java.util.Date;
 public class Main {
 
 	public static void main(String[] args) throws Exception {
-		System.out.println(ProjectEuler.solveTask22());
+		Date start = new Date();
+		System.out.println(ProjectEuler.solveTask23());
+		System.out.println(System.currentTimeMillis() - start.getTime());
 	}
 }

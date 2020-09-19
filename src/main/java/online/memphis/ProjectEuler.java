@@ -689,7 +689,7 @@ public class ProjectEuler {
      * of 938 × 53 = 49714. What is the total of all the name scores in the file?
      */
 
-    public static long solveTask22() {
+    public static int solveTask22() {
         String[] names = EulerUtil.parseFileTask22("files/task22");
         Arrays.sort(names);
         int total = 0;
@@ -705,5 +705,42 @@ public class ProjectEuler {
             score += name.charAt(i) - 64;
         }
         return score;
+    }
+
+    /*
+     * --- 23. Non-abundant sums ---
+     * A number n is called deficient if the sum of its proper divisors is less
+     * than n and it is called abundant if this sum exceeds n. By mathematical analysis,
+     * it can be shown that all integers greater than 28123 can be written as the sum of
+     * two abundant numbers. Find the sum of all the positive integers which cannot be
+     * written as the sum of two abundant numbers.
+     */
+
+    public static int solveTask23() {
+        List<Integer> abundantNumbers = new ArrayList<>();
+        for (int i = 1; i < 28123; i++) {
+            if (i < getSumOfProperDivs(i)) {
+                abundantNumbers.add(i);
+            }
+        }
+        Set<Integer> sumOfAbundant = getSumOfAbundant(abundantNumbers);
+        int sum = 0;
+        for (int i = 1; i <= 28123; i++) {
+            if (!sumOfAbundant.contains(i)) {
+                sum += i;
+            }
+        }
+        return sum;
+    }
+
+    private static Set<Integer> getSumOfAbundant(List<Integer> numbers) {
+        Set<Integer> result = new HashSet<>();
+        for (int i = 0; i < numbers.size(); i++) {
+            for (int j = i; numbers.get(j) <= 28123 - numbers.get(i); j++) {
+                int sum = numbers.get(i) + numbers.get(j);
+                if (!result.contains(sum)) result.add(sum);
+            }
+        }
+        return result;
     }
 }
