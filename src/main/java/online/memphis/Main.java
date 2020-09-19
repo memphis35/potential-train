@@ -6,7 +6,7 @@ public class Main {
 
 	public static void main(String[] args) throws Exception {
 		Date start = new Date();
-		System.out.println(ProjectEuler.solveTask23());
+		System.out.println(ProjectEuler.solveTask20(100));
 		System.out.println(System.currentTimeMillis() - start.getTime());
 	}
 }

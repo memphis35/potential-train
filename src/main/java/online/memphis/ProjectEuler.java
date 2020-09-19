@@ -7,7 +7,6 @@ import online.memphis.util.Numbers;
 import java.io.*;
 import java.util.*;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 public class ProjectEuler {
 
@@ -626,7 +625,7 @@ public class ProjectEuler {
         Arrays.fill(result, -1);
         result[0] = 1;
         for (int i = 2; i <= number; i++) {
-            for (int j = 0; result[j] >= 0; j++) {
+            for (int j = 0; result[j] != -1; j++) {
                 result[j] *= i;
             }
             recheckArray(result);
@@ -635,11 +634,11 @@ public class ProjectEuler {
     }
 
     private static void recheckArray(int[] array) {
-        for (int i = 0; array[i] >= 0; i++) {
+        for (int i = 0; i < array.length - 1 && array[i] >= 0; i++) {
             int temp = array[i];
             if (temp > 0) {
                 array[i] = temp % 10;
-                if (array[i + 1] == -1) {
+                if (array[i + 1] == -1 && temp / 10 > 0) {
                     array[i + 1] = temp / 10;
                 } else {
                     array[i + 1] += temp / 10;
@@ -742,5 +741,44 @@ public class ProjectEuler {
             }
         }
         return result;
+    }
+
+    /*
+     * --- 25. 1000-digit Fibonacci number ---
+     * What is the index of the first term in the Fibonacci sequence to contain 1000 digits?
+     */
+
+    public static int solveTask25() {
+        int[] first = new int[1000];
+        int[] second = new int[1000];
+        int[] temp;
+        int index = 2;
+        Arrays.fill(first, -1);
+        Arrays.fill(second, -1);
+        first[0] = second[0] = 1;
+        while (second[second.length - 1] <= 0) {
+            index++;
+            temp = second.clone();
+            for (int i = 0; i < first.length && first[i] >= 0; i++) {
+                second[i] = first[i] + second[i];
+            }
+            recheckArray2(second);
+            first = temp;
+        }
+        return index;
+    }
+
+    private static void recheckArray2(int[] array) {
+        for (int i = 0; i < array.length - 1 && array[i] >= 0; i++) {
+            int temp = array[i];
+            if (temp > 0) {
+                array[i] = temp % 10;
+                if (array[i + 1] == -1 && temp / 10 > 0) {
+                    array[i + 1] = temp / 10;
+                } else {
+                    array[i + 1] += temp / 10;
+                }
+            }
+        }
     }
 }
