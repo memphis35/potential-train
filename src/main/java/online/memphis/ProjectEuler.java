@@ -1,6 +1,7 @@
 package online.memphis;
 
 import online.memphis.util.CalendarUtil;
+import online.memphis.util.DigitHolder;
 import online.memphis.util.EulerUtil;
 import online.memphis.util.Numbers;
 
@@ -741,6 +742,40 @@ public class ProjectEuler {
             }
         }
         return result;
+    }
+
+    /*
+     * --- 24. Lexicographic permutations ---
+     * What is the millionth lexicographic permutation of the digits 0, 1, 2, 3, 4, 5, 6, 7, 8 and 9?
+     */
+
+    public static long solveTask24() {
+        DigitHolder digits = new DigitHolder(10);
+        Stack<Integer> stack = new Stack<>();
+        getPermutations(stack, digits);
+        long result = 0;
+        for (Integer digit : stack) {
+            result = (result * 10) + digit;
+        }
+        return result;
+    }
+
+    private static void getPermutations(Stack<Integer> stack, DigitHolder digits) {
+        for (int i = 0; i < digits.size(); i++) {
+            stack.push(digits.getDigit(i));
+            if (digits.size() == 0) {
+                count++;
+                if (count == 1_000_000) {
+                    return;
+                } else {
+                    digits.insertDigit(stack.pop());
+                    return;
+                }
+            }
+            getPermutations(stack, digits);
+            if (count == 1_000_000) return;
+            digits.insertDigit(stack.pop());
+        }
     }
 
     /*
