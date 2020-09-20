@@ -537,33 +537,28 @@ public class ProjectEuler {
      * --- 18. Maximum path sum I ---
      * Find the maximum total from top to bottom of the triangle (file: task18)):
      */
-    //TODO: TO REALIZE A BINARY TREE, ANSWER IS 1074
+
     public static int solveTask18() {
         List<int[]> pyramid = EulerUtil.parsePyramidList("./files/task18");
-        int[] upperRow = pyramid.get(0);
-        for (int i = 1; i < pyramid.size(); i++) {
-            int[] lowerRow = pyramid.get(i);
-            int[] sumRow = new int[pow(2, i)];
-            for (int up = 0, k = 0, low = 0; up < upperRow.length; up++) {
-                sumRow[k++] = upperRow[up] + lowerRow[low];
-                sumRow[k++] = upperRow[up] + lowerRow[low + 1];
-                if (up % 2 != 0) low++;
+        int max = 0;
+        int size = pyramid.size();
+        for (int i = 1; i < size; i++) {
+            int[] previousRow = pyramid.get(i - 1);
+            int[] currentRow = pyramid.get(i);
+            for (int j = 0; j < currentRow.length; j++) {
+                if (j == 0) {
+                    currentRow[j] += previousRow[j];
+                } else if (j > 0 && j <  currentRow.length - 1) {
+                    int firstSum = currentRow[j] + previousRow[j-1];
+                    int secondSum = currentRow[j] + previousRow[j];
+                    currentRow[j] = firstSum > secondSum ? firstSum : secondSum;
+                } else {
+                    currentRow[j] += previousRow[j-1];
+                }
+                max = currentRow[j] > max ? currentRow[j] : max;
             }
-            upperRow = sumRow;
         }
-        int sum = 0;
-        for (int number : upperRow) {
-            sum += number;
-        }
-        return sum;
-    }
-
-    private static int pow(int number, int power) {
-        int result = number;
-        while (power-- > 1) {
-            result *= number;
-        }
-        return result;
+        return max;
     }
 
     //for solve task18 recursive brute force permutations
