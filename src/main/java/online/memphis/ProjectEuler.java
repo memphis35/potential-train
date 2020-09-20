@@ -903,4 +903,33 @@ public class ProjectEuler {
         builder.reverse();
         return builder.toString();
     }
+
+    /*
+     * --- 30. Digit fifth powers ---
+     * Find the sum of all the numbers that can be written as the sum of fifth powers of their digits.
+     */
+
+    public static int solveTask30() {
+        List<Integer> result = new ArrayList<>();
+        int[] power = {0, 1, 32, 243, 1024, 3125, 7776, 16807, 32768, 59049};
+        int[] number = {1, -1, -1, -1, -1, -1};
+        for (int i = 2; i < 1_000_000; i++) {
+            number[0]++;
+            if (number[0] >= 10) recheckArray2(number);
+            int sum = getSum(power, number);
+            if (i == sum) {
+                System.out.println(i);
+                result.add(i);
+            }
+        }
+        return result.stream().reduce(0, (x, y) -> x + y);
+    }
+
+    private static int getSum(int[] powers, int[] number) {
+        int sum = 0;
+        for (int i = 0; i < number.length && number[i] >= 0; i++) {
+            sum += powers[number[i]];
+        }
+        return sum;
+    }
 }
