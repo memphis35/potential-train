@@ -813,6 +813,47 @@ public class ProjectEuler {
     }
 
     /*
+     * --- 27. Reciprocal cycles ---
+     * Find the value of d < 1000 for which 1/d contains the longest recurring cycle in its decimal fraction part.
+     */
+
+    public static int solveTask26(int number) {
+        int maxRepeat = 0;
+        int maxNumber = 0;
+        for (int i = 2; i <= number; i++) {
+            int tempRepeat = getDecimalFraction(1, i);
+            if (tempRepeat > maxRepeat) {
+                maxRepeat = tempRepeat;
+                maxNumber = i;
+            }
+        }
+        return maxNumber;
+    }
+
+    private static int getDecimalFraction(int number, int divisor) {
+        int remain = number % divisor;
+        List<Integer> remains = new ArrayList<>();
+        int index;
+        do {
+            remains.add(remain * 10);
+            index = checkFraction(remains, remain * 10);
+            remain = (remain * 10) % divisor;
+        } while (index < 0);
+        return remains.size() - 1 - index;
+    }
+
+    private static int checkFraction(List<Integer> remains, int number) {
+        int index = -1;
+        for (int i = 0; i < remains.size() - 1; i++) {
+            if (remains.get(i) == number) {
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
+
+    /*
      * --- 28. Number spiral diagonals ---
      * Starting with the number 1 and moving to the right in a clockwise direction a 5 by 5 spiral is formed as follows:
      * 21 22 23 24 25

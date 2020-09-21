@@ -1,10 +1,11 @@
 package online.memphis.util;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class EulerUtil {
 
@@ -77,5 +78,13 @@ public class EulerUtil {
             e.printStackTrace();
         }
         return result;
+    }
+
+    public static void printArray(int[] array) {
+        StringBuilder builder = new StringBuilder();
+        for (int x : array) {
+            builder.append(x);
+        }
+        System.out.println(builder.toString());
     }
 }
