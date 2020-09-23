@@ -1000,4 +1000,35 @@ public class ProjectEuler {
             stack.pop();
         }
     }
+
+    /*
+     * --- 34. Digit factorials ---
+     * 145 is a curious number, as 1! + 4! + 5! = 1 + 24 + 120 = 145.
+     * Find the sum of all numbers which are equal to the sum of the factorial of their digits.
+     */
+
+    public static int solveTask34() {
+        int[] factorials = {1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880};
+        int[] number = {2, -1, -1, -1, -1, -1, -1};
+        Set<Integer> result = new HashSet<>();
+        for (int i = 3; i < 10_000_000; i++) {
+            number[0]++;
+            if (number[0] >= 10) recheckArray2(number);
+            int factSum = getFactorialSum(number, factorials);
+            if (factSum == i) result.add(i);
+        }
+        int sum = 0;
+        for (Integer num : result) {
+            sum += num;
+        }
+        return sum;
+    }
+
+    private static int getFactorialSum(int[] number, int[] factorials) {
+        int sum = 0;
+        for (int i = 0; i < number.length && number[i] >= 0; i++) {
+            sum += factorials[number[i]];
+        }
+        return sum;
+    }
 }
