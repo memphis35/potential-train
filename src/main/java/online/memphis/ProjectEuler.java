@@ -1,9 +1,6 @@
 package online.memphis;
 
-import online.memphis.util.CalendarUtil;
-import online.memphis.util.DigitHolder;
-import online.memphis.util.EulerUtil;
-import online.memphis.util.Numbers;
+import online.memphis.util.*;
 
 import java.io.*;
 import java.util.*;
@@ -972,5 +969,35 @@ public class ProjectEuler {
             sum += powers[number[i]];
         }
         return sum;
+    }
+
+    /*
+     * --- 31. Coin sums ---
+     * In the United Kingdom the currency is made up of pound (£) and pence (p).
+     * There are eight coins in general circulation:
+     * 1p, 2p, 5p, 10p, 20p, 50p, £1 (100p), and £2 (200p).
+     * It is possible to make £2 in the following way:
+     * 1×£1 + 1×50p + 2×20p + 1×5p + 1×2p + 3×1p
+     * How many different ways can £2 be made using any number of coins?
+     */
+
+    public static long solveTask31() {
+        int[] coins = {1, 2, 5, 10, 20, 50, 100, 200};
+        CoinStack stack = new CoinStack();
+        getCoinCombinations(stack, coins, 0, 200);
+        return count;
+    }
+
+    private static void getCoinCombinations(CoinStack stack, int[] coins, int index, int limit) {
+        for (int i = index; i < coins.length; i++) {
+            stack.push(coins[i]);
+            if (stack.getSum() >= limit) {
+                if (stack.getSum() == limit) count++;
+                stack.pop();
+                return;
+            }
+            getCoinCombinations(stack, coins, i, limit);
+            stack.pop();
+        }
     }
 }
