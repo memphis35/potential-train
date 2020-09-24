@@ -87,4 +87,47 @@ public class EulerUtil {
         }
         System.out.println(builder.toString());
     }
+
+    public static void recheckArray(int[] array) {
+        for (int i = 0; i < array.length - 1 && array[i] >= 0; i++) {
+            int temp = array[i];
+            if (temp > 0) {
+                array[i] = temp % 10;
+                if (array[i + 1] == -1 && temp / 10 > 0) {
+                    array[i + 1] = temp / 10;
+                } else {
+                    array[i + 1] += temp / 10;
+                }
+            }
+        }
+    }
+
+    public static void recheckArray(long[] array) {
+        for (int i = 0; i < array.length - 1 && array[i] >= 0; i++) {
+            long temp = array[i];
+            if (temp > 0) {
+                array[i] = temp % 10;
+                if (array[i + 1] == -1 && temp / 10 > 0) {
+                    array[i + 1] = temp / 10;
+                } else {
+                    array[i + 1] += temp / 10;
+                }
+            }
+        }
+    }
+
+    public static void normalizeList(List<Integer> selfPowered) {
+        int temp;
+        for (int i = 0; i < selfPowered.size(); i++) {
+            temp = selfPowered.get(i);
+            if (temp > 9) {
+                selfPowered.set(i, temp % 10);
+                if (i == selfPowered.size() - 1) {
+                    selfPowered.add(temp / 10);
+                } else {
+                    selfPowered.set(i + 1, selfPowered.get(i + 1) + temp / 10);
+                }
+            }
+        }
+    }
 }

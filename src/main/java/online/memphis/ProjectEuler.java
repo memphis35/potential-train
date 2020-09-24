@@ -3,6 +3,7 @@ package online.memphis;
 import online.memphis.util.*;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -789,24 +790,10 @@ public class ProjectEuler {
             for (int i = 0; i < first.length && first[i] >= 0; i++) {
                 second[i] = first[i] + second[i];
             }
-            recheckArray2(second);
+            EulerUtil.recheckArray(second);
             first = temp;
         }
         return index;
-    }
-
-    private static void recheckArray2(int[] array) {
-        for (int i = 0; i < array.length - 1 && array[i] >= 0; i++) {
-            int temp = array[i];
-            if (temp > 0) {
-                array[i] = temp % 10;
-                if (array[i + 1] == -1 && temp / 10 > 0) {
-                    array[i + 1] = temp / 10;
-                } else {
-                    array[i + 1] += temp / 10;
-                }
-            }
-        }
     }
 
     /*
@@ -908,7 +895,7 @@ public class ProjectEuler {
         int[] arrayNumber = generateNumberArray(number, power);
         for (int i = 2; i <= power; i++) {
             getPoweredNumber(arrayNumber, number);
-            recheckArray2(arrayNumber);
+            EulerUtil.recheckArray(arrayNumber);
             String str = getStringFromArrayNumber(arrayNumber);
             if (!set.contains(str)) set.add(str);
         }
@@ -953,7 +940,7 @@ public class ProjectEuler {
         int[] number = {1, -1, -1, -1, -1, -1};
         for (int i = 2; i < 1_000_000; i++) {
             number[0]++;
-            if (number[0] >= 10) recheckArray2(number);
+            if (number[0] >= 10) EulerUtil.recheckArray(number);
             int sum = getSum(power, number);
             if (i == sum) {
                 System.out.println(i);
@@ -1013,15 +1000,12 @@ public class ProjectEuler {
         Set<Integer> result = new HashSet<>();
         for (int i = 3; i < 10_000_000; i++) {
             number[0]++;
-            if (number[0] >= 10) recheckArray2(number);
+            if (number[0] >= 10) EulerUtil.recheckArray(number);
             int factSum = getFactorialSum(number, factorials);
             if (factSum == i) result.add(i);
         }
         int sum = 0;
-        for (Integer num : result) {
-            sum += num;
-        }
-        return sum;
+        return result.stream().reduce(0, (x, y) -> x + y);
     }
 
     private static int getFactorialSum(int[] number, int[] factorials) {
@@ -1030,5 +1014,50 @@ public class ProjectEuler {
             sum += factorials[number[i]];
         }
         return sum;
+    }
+
+    /*
+     * --- 48. Self powers ---
+     * The series, 1^1 + 2^2 + 3^3 + ... + 10^10 = 10405071317.
+     * Find the last ten digits of the series, 1^1 + 2^2 + 3^3 + ... + 1000^1000.
+     */
+
+    public static long solveTask48() {
+        long[] lastTenDigits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        int[] selfPowered = new int[11];
+        for (int i = 1; i <= 50000; i++) {
+            initializeNumber(selfPowered, i);
+            getSelfPower(i, selfPowered);
+            addSumToList(lastTenDigits, selfPowered);
+        }
+        long result = lastTenDigits[lastTenDigits.length - 2];
+        for (int i = lastTenDigits.length - 3; i >= 0; i--) {
+            result = result * 10 + lastTenDigits[i];
+        }
+        return result;
+    }
+
+    private static void getSelfPower(int i, int[] selfPowered) {
+        for (int pow = 1; pow < i; pow++) {
+            for (int index = 0; index < selfPowered.length && selfPowered[index] >= 0; index++) {
+                selfPowered[index] *= i;
+            }
+            EulerUtil.recheckArray(selfPowered);
+        }
+    }
+
+    private static void addSumToList(long[] lastTenDigits, int[] selfPowered) {
+        for (int i = 0; i < selfPowered.length && i < lastTenDigits.length && selfPowered[i] >= 0; i++) {
+            lastTenDigits[i] += selfPowered[i];
+            EulerUtil.recheckArray(lastTenDigits);
+        }
+    }
+
+    private static void initializeNumber(int[] array, int startNumber) {
+        array[0] = startNumber;
+        for (int i = 1; i < array.length; i++) {
+            array[i] = -1;
+        }
+        EulerUtil.recheckArray(array);
     }
 }
