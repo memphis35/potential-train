@@ -1,9 +1,11 @@
 package online.memphis;
 
+import online.memphis.model.Fraction;
 import online.memphis.util.*;
 
-import java.io.*;
-import java.math.BigInteger;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -986,6 +988,39 @@ public class ProjectEuler {
             getCoinCombinations(stack, coins, i, limit);
             stack.pop();
         }
+    }
+
+    /*
+     * --- 33. Digit cancelling fractions ---
+     * The fraction 49/98 is a curious fraction, as an inexperienced mathematician in attempting to simplify it
+     * may incorrectly believe that 49/98 = 4/8, which is correct, is obtained by cancelling the 9's.
+     * There are exactly four non-trivial examples of this type of fraction, less than one in value, and containing
+     * two digits in the numerator and denominator.
+     * If the product of these four fractions is given in its lowest common terms, find the value of the denominator.
+     */
+
+    public static List solveTask33() {
+        List<Fraction> result = new ArrayList<>();
+        for (int num = 12; num < 50; num++) {
+            for (int den = 2; den < 9; den++) {
+                int denominator;
+                if (num * den < 99) {
+                    denominator = num * den;
+                } else {
+                    break;
+                }
+                if (denominator % 10 != 0) {
+                    for (int count = 1; count < den; count++) {
+                        Fraction fraction = new Fraction(num * count, denominator);
+                        if (fraction.canBeCancelled()) {
+                            if (fraction.isCurious()) result.add(fraction);
+                        }
+                    }
+                }
+            }
+        }
+        result.forEach(System.out::println);
+        return result;
     }
 
     /*
